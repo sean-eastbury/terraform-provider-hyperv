@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
-	"github.com/taliesins/terraform-provider-hyperv/api"
+	"github.com/tidalf/terraform-provider-hyperv/api"
 	"log"
 )
 
-const MaxUint32  = 4294967295
+const MaxUint32 = 4294967295
 
 func resourceHyperVMachineInstance() *schema.Resource {
 	return &schema.Resource{
@@ -24,11 +24,11 @@ func resourceHyperVMachineInstance() *schema.Resource {
 			},
 
 			"generation": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  1,
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      1,
 				ValidateFunc: IntInSlice([]int{1, 2}),
-				ForceNew: true,
+				ForceNew:     true,
 			},
 
 			"automatic_critical_error_action": {
@@ -150,12 +150,23 @@ func resourceHyperVMachineInstance() *schema.Resource {
 				Default:  true,
 			},
 
-			"integration_services": {
-				Type:     schema.TypeMap,
+			"enable_secure_boot": {
+				Type:     schema.TypeString,
 				Optional: true,
-				DefaultFunc: api.DefaultVmIntegrationServices,
+				Default:  "off",
+			},
+			"secure_boot_template": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+			},
+
+			"integration_services": {
+				Type:             schema.TypeMap,
+				Optional:         true,
+				DefaultFunc:      api.DefaultVmIntegrationServices,
 				DiffSuppressFunc: api.DiffSuppressVmIntegrationServices,
-				Elem:     schema.TypeBool,
+				Elem:             schema.TypeBool,
 			},
 
 			"state": {
@@ -165,25 +176,25 @@ func resourceHyperVMachineInstance() *schema.Resource {
 				ValidateFunc: stringKeyInMap(api.VmState_SettableValue, true),
 			},
 
-			"wait_for_state_timeout" : {
+			"wait_for_state_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  120,
 			},
 
-			"wait_for_state_poll_period" : {
+			"wait_for_state_poll_period": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  2,
 			},
 
-			"wait_for_ips_timeout" : {
+			"wait_for_ips_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  300,
 			},
 
-			"wait_for_ips_poll_period" : {
+			"wait_for_ips_poll_period": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  5,
@@ -221,9 +232,9 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Default:  true,
 						},
 						"static_mac_address": {
-							Type:     schema.TypeString,
-							Optional: true,
-							Default:  "",
+							Type:             schema.TypeString,
+							Optional:         true,
+							Default:          "",
 							DiffSuppressFunc: api.DiffSuppressVmStaticMacAddress,
 						},
 						"mac_address_spoofing": {
@@ -257,15 +268,15 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							ValidateFunc: stringKeyInMap(api.OnOffState_value, true),
 						},
 						"vmq_weight": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Default:  100,
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      100,
 							ValidateFunc: validation.IntBetween(0, 100),
 						},
 						"iov_queue_pairs_requested": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Default:  1,
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      1,
 							ValidateFunc: validation.IntBetween(1, 4294967295),
 						},
 						"iov_interrupt_moderation": {
@@ -275,9 +286,9 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							ValidateFunc: stringKeyInMap(api.IovInterruptModerationValue_value, true),
 						},
 						"iov_weight": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Default:  100,
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      100,
 							ValidateFunc: validation.IntBetween(0, 100),
 						},
 						"ipsec_offload_maximum_security_association": {
@@ -296,9 +307,9 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Default:  0,
 						},
 						"minimum_bandwidth_weight": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Default:  0,
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      0,
 							ValidateFunc: validation.IntBetween(0, 100),
 						},
 						"mandatory_feature_id": {
@@ -323,9 +334,9 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Default:  "",
 						},
 						"virtual_subnet_id": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Default:  0,
+							Type:         schema.TypeInt,
+							Optional:     true,
+							Default:      0,
 							ValidateFunc: ValueOrIntBetween(0, 4096, 16777215),
 						},
 						"allow_teaming": {
@@ -391,16 +402,16 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Optional: true,
 							Default:  16,
 						},
-						"wait_for_ips" : {
+						"wait_for_ips": {
 							Type:     schema.TypeBool,
 							Optional: true,
 							Default:  true,
 						},
-						"ip_addresses" : {
+						"ip_addresses": {
 							Type:        schema.TypeList,
 							Computed:    true,
 							Description: "The current list of IP addresses on this virtual machine.",
-							Elem: &schema.Schema{Type: schema.TypeString},
+							Elem:        &schema.Schema{Type: schema.TypeString},
 						},
 					},
 				},
@@ -460,7 +471,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 						"disk_number": {
 							Type:     schema.TypeInt,
 							Optional: true,
-							Default: MaxUint32,
+							Default:  MaxUint32,
 						},
 						"resource_pool_name": {
 							Type:     schema.TypeString,
@@ -532,6 +543,8 @@ func resourceHyperVMachineInstanceCreate(data *schema.ResourceData, meta interfa
 	smartPagingFilePath := (data.Get("smart_paging_file_path")).(string)
 	snapshotFileLocation := (data.Get("snapshot_file_location")).(string)
 	staticMemory := (data.Get("static_memory")).(bool)
+	enableSecureBoot := (data.Get("enable_secure_boot")).(string)
+	secureBootTemplate := (data.Get("secure_boot_template")).(string)
 	state := api.ToVmState((data.Get("state")).(string))
 
 	if dynamicMemory && staticMemory {
@@ -562,7 +575,7 @@ func resourceHyperVMachineInstanceCreate(data *schema.ResourceData, meta interfa
 		return err
 	}
 
-	err = client.CreateVm(name, generation, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory)
+	err = client.CreateVm(name, generation, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, enableSecureBoot, secureBootTemplate)
 	if err != nil {
 		return err
 	}
@@ -753,6 +766,8 @@ func resourceHyperVMachineInstanceUpdate(data *schema.ResourceData, meta interfa
 		data.HasChange("processor_count") ||
 		data.HasChange("smart_paging_file_path") ||
 		data.HasChange("snapshot_file_location") ||
+		data.HasChange("enable_secure_boot") ||
+		data.HasChange("secure_boot_template") ||
 		data.HasChange("static_memory") {
 		//generation := (d.Get("generation")).(int)
 		automaticCriticalErrorAction := api.ToCriticalErrorAction((data.Get("automatic_critical_error_action")).(string))
@@ -774,6 +789,8 @@ func resourceHyperVMachineInstanceUpdate(data *schema.ResourceData, meta interfa
 		smartPagingFilePath := (data.Get("smart_paging_file_path")).(string)
 		snapshotFileLocation := (data.Get("snapshot_file_location")).(string)
 		staticMemory := (data.Get("static_memory")).(bool)
+		enableSecureBoot := (data.Get("enable_secure_boot")).(string)
+		secureBootTemplate := (data.Get("secure_boot_template")).(string)
 
 		if dynamicMemory && staticMemory {
 			return fmt.Errorf("[ERROR][hyperv][update] Dynamic and static can't be both selected at the same time")
@@ -783,7 +800,7 @@ func resourceHyperVMachineInstanceUpdate(data *schema.ResourceData, meta interfa
 			return fmt.Errorf("[ERROR][hyperv][update] Either dynamic or static must be selected")
 		}
 
-		err = client.UpdateVm(name, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory)
+		err = client.UpdateVm(name, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, enableSecureBoot, secureBootTemplate)
 		if err != nil {
 			return err
 		}

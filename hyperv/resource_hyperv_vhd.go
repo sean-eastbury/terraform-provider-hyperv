@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/taliesins/terraform-provider-hyperv/api"
+	"github.com/tidalf/terraform-provider-hyperv/api"
 	"os"
 )
 
@@ -56,12 +56,11 @@ func resourceHyperVVhd() *schema.Resource {
 				ConflictsWith: []string{
 					"source",
 					"source_vm",
-					"parent_path",
 				},
 			},
 			"parent_path": {
-				Type:          schema.TypeString,
-				Optional:      true,
+				Type:     schema.TypeString,
+				Optional: true,
 				ConflictsWith: []string{
 					"source",
 					"source_vm",
@@ -70,17 +69,17 @@ func resourceHyperVVhd() *schema.Resource {
 				},
 			},
 			"size": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				Default:       0,
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  0,
 				ConflictsWith: []string{
 					"parent_path",
 				},
 			},
 			"block_size": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				Default:       0,
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  0,
 				ConflictsWith: []string{
 					"source",
 					"source_vm",
@@ -88,9 +87,9 @@ func resourceHyperVVhd() *schema.Resource {
 				},
 			},
 			"logical_sector_size": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				Default:       0,
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  0,
 				ConflictsWith: []string{
 					"source",
 					"source_vm",
@@ -99,9 +98,9 @@ func resourceHyperVVhd() *schema.Resource {
 				ValidateFunc: IntInSlice([]int{0, 512, 4096}),
 			},
 			"physical_sector_size": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				Default:       0,
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  0,
 				ConflictsWith: []string{
 					"source",
 					"source_vm",
@@ -235,7 +234,7 @@ func resourceHyperVVhdUpdate(d *schema.ResourceData, meta interface{}) (err erro
 
 	exists := (d.Get("exists")).(bool)
 
-	if !exists || d.HasChange("path") || d.HasChange("source") || d.HasChange("source_vm") || d.HasChange("source_disk") || d.HasChange("parent_path")  {
+	if !exists || d.HasChange("path") || d.HasChange("source") || d.HasChange("source_vm") || d.HasChange("source_disk") || d.HasChange("parent_path") {
 		//delete it as its changed
 		err = c.CreateOrUpdateVhd(path, source, sourceVm, sourceDisk, vhdType, parentPath, size, blockSize, logicalSectorSize, physicalSectorSize)
 
