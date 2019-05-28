@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"strconv"
 	"strings"
 	"text/template"
+
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 type ControllerType int
@@ -134,6 +135,7 @@ func ExpandHardDiskDrives(d *schema.ResourceData) ([]vmHardDiskDrive, error) {
 
 			expandedHardDiskDrive := vmHardDiskDrive{
 				ControllerType:                ToControllerType(hardDiskDrive["controller_type"].(string)),
+				Boot:                          bool(hardDiskDrive["boot"].(bool)),
 				ControllerNumber:              int32(hardDiskDrive["controller_number"].(int)),
 				ControllerLocation:            int32(hardDiskDrive["controller_location"].(int)),
 				Path:                          hardDiskDrive["path"].(string),
@@ -160,6 +162,7 @@ func FlattenHardDiskDrives(hardDiskDrives *[]vmHardDiskDrive) []interface{} {
 		for _, hardDiskDrive := range *hardDiskDrives {
 			flattenedHardDiskDrive := make(map[string]interface{})
 			flattenedHardDiskDrive["controller_type"] = hardDiskDrive.ControllerType.String()
+			flattenedHardDiskDrive["boot"] = hardDiskDrive.Boot
 			flattenedHardDiskDrive["controller_number"] = hardDiskDrive.ControllerNumber
 			flattenedHardDiskDrive["controller_location"] = hardDiskDrive.ControllerLocation
 			flattenedHardDiskDrive["path"] = hardDiskDrive.Path
@@ -190,6 +193,7 @@ type vmHardDiskDrive struct {
 	MinimumIops                   uint64
 	QosPolicyId                   string
 	OverrideCacheAttributes       CacheAttributes
+	Boot                          bool
 	//AllowUnverifiedPaths          bool no way of checking if its turned on so always turn on
 }
 
@@ -222,6 +226,9 @@ if ($vmHardDiskDrive.DiskNumber -lt 4294967295){
 }
 
 Add-VmHardDiskDrive @NewVmHardDiskDriveArgs
+if ($vmHardDiskDrive.Boot){
+	Get-VMFirmware -VMName $vmHardDiskDrive.VmName | Set-VMFirmware -FirstBootDevice (Get-VMHardDiskDrive -VMName $vmHardDiskDrive.VmName)[0]
+}
 `))
 
 func (c *HypervClient) CreateVmHardDiskDrive(
@@ -229,6 +236,7 @@ func (c *HypervClient) CreateVmHardDiskDrive(
 	controllerType ControllerType,
 	controllerNumber int32,
 	controllerLocation int32,
+	boot bool,
 	path string,
 	diskNumber uint32,
 	resourcePoolName string,
@@ -245,6 +253,7 @@ func (c *HypervClient) CreateVmHardDiskDrive(
 		ControllerType:                controllerType,
 		ControllerNumber:              controllerNumber,
 		ControllerLocation:            controllerLocation,
+		Boot:                          boot,
 		Path:                          path,
 		DiskNumber:                    diskNumber,
 		ResourcePoolName:              resourcePoolName,
@@ -272,6 +281,7 @@ $vmHardDiskDrivesObject = @(Get-VMHardDiskDrive -VmName '{{.VmName}}' | %{ @{
 	ControllerType=$_.ControllerType;
 	ControllerNumber=$_.ControllerNumber;
 	ControllerLocation=$_.ControllerLocation;
+	Boot=$_.Boot;
 	Path=$_.Path;
 	DiskNumber=if ($_.DiskNumber -eq $null) { 4294967295 } else { $_.DiskNumber };
 	ResourcePoolName=$_.PoolName;
@@ -304,6 +314,7 @@ type updateVmHardDiskDriveArgs struct {
 	VmName              string
 	ControllerNumber    int32
 	ControllerLocation  int32
+	Boot                bool
 	VmHardDiskDriveJson string
 }
 
@@ -338,7 +349,9 @@ $SetVmHardDiskDriveArgs.OverrideCacheAttributes=$vmHardDiskDrive.OverrideCacheAt
 $SetVmHardDiskDriveArgs.AllowUnverifiedPaths=$true
 
 Set-VMHardDiskDrive @SetVmHardDiskDriveArgs
-
+if ($vmHardDiskDrive.Boot){
+	Get-VMFirmware -VMName $vmHardDiskDrive.VmName | Set-VMFirmware -FirstBootDevice (Get-VMHardDiskDrive -VMName $vmHardDiskDrive.VmName)[0]
+}
 `))
 
 func (c *HypervClient) UpdateVmHardDiskDrive(
@@ -346,6 +359,7 @@ func (c *HypervClient) UpdateVmHardDiskDrive(
 	controllerNumber int32,
 	controllerLocation int32,
 	controllerType ControllerType,
+	boot bool,
 	toControllerNumber int32,
 	toControllerLocation int32,
 	path string,
@@ -363,6 +377,7 @@ func (c *HypervClient) UpdateVmHardDiskDrive(
 		ControllerType:                controllerType,
 		ControllerNumber:              toControllerNumber,
 		ControllerLocation:            toControllerLocation,
+		Boot:                          boot,
 		Path:                          path,
 		DiskNumber:                    diskNumber,
 		ResourcePoolName:              resourcePoolName,
@@ -377,6 +392,7 @@ func (c *HypervClient) UpdateVmHardDiskDrive(
 		VmName:              vmName,
 		ControllerNumber:    controllerNumber,
 		ControllerLocation:  controllerLocation,
+		Boot:                boot,
 		VmHardDiskDriveJson: string(vmHardDiskDriveJson),
 	})
 
@@ -435,6 +451,7 @@ func (c *HypervClient) CreateOrUpdateVmHardDiskDrives(vmName string, hardDiskDri
 			currentHardDiskDrive.ControllerNumber,
 			currentHardDiskDrive.ControllerLocation,
 			hardDiskDrive.ControllerType,
+			hardDiskDrive.Boot,
 			hardDiskDrive.ControllerNumber,
 			hardDiskDrive.ControllerLocation,
 			hardDiskDrive.Path,
@@ -458,6 +475,7 @@ func (c *HypervClient) CreateOrUpdateVmHardDiskDrives(vmName string, hardDiskDri
 			hardDiskDrive.ControllerType,
 			hardDiskDrive.ControllerNumber,
 			hardDiskDrive.ControllerLocation,
+			hardDiskDrive.Boot,
 			hardDiskDrive.Path,
 			hardDiskDrive.DiskNumber,
 			hardDiskDrive.ResourcePoolName,

@@ -2,10 +2,11 @@ package hyperv
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 	"github.com/tidalf/terraform-provider-hyperv/api"
-	"log"
 )
 
 const MaxUint32 = 4294967295
@@ -454,6 +455,11 @@ func resourceHyperVMachineInstance() *schema.Resource {
 							Optional:     true,
 							Default:      api.ControllerType_name[api.ControllerType_Ide],
 							ValidateFunc: stringKeyInMap(api.ControllerType_value, true),
+						},
+						"boot": {
+							Type:     schema.TypeBool,
+							Optional: true,
+							Default:  false,
 						},
 						"controller_number": {
 							Type:     schema.TypeInt,

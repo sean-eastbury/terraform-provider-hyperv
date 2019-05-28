@@ -383,8 +383,8 @@ if ($vm.StaticMemory) {
 }
 
 Set-Vm @SetVmArgs
-$hdddrive = Get-VMHardDiskDrive $vm.Name
-Set-VMFirmware -VMName $vm.Name -EnableSecureBoot $vm.EnableSecureBoot -SecureBootTemplate $vm.SecureBootTemplate -FirstBootDevice $hdddrive
+
+Set-VMFirmware -VMName $vm.Name -EnableSecureBoot $vm.EnableSecureBoot -SecureBootTemplate $vm.SecureBootTemplate 
 `))
 
 /*
@@ -560,8 +560,7 @@ if ($vm.StaticMemory) {
 }
 
 Set-Vm @SetVmArgs
-$hdddrive = Get-VMHardDiskDrive $vm.Name
-Set-VMFirmware -VMName $vm.Name -EnableSecureBoot $vm.EnableSecureBoot -SecureBootTemplate $vm.SecureBootTemplate -FirstBootDevice $hdddrive
+Set-VMFirmware -VMName $vm.Name -EnableSecureBoot $vm.EnableSecureBoot -SecureBootTemplate $vm.SecureBootTemplate
 `))
 
 /*
