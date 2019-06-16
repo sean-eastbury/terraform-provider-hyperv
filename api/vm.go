@@ -639,8 +639,41 @@ type deleteVmArgs struct {
 }
 
 var deleteVmTemplate = template.Must(template.New("DeleteVm").Parse(`
+function Retry-Command
+{
+    param (
+    [Parameter(Mandatory=$true)][string]$command, 
+    [Parameter(Mandatory=$true)][hashtable]$args, 
+    [Parameter(Mandatory=$false)][int]$retries = 10, 
+    [Parameter(Mandatory=$false)][int]$secondsDelay = 3
+    )
+    
+    # Setting ErrorAction to Stop is important. This ensures any errors that occur in the command are 
+    # treated as terminating errors, and will be caught by the catch block.
+    $args.ErrorAction = "Stop"
+    
+    $retrycount = 0
+    $completed = $false
+
+    while (-not $completed) {
+        try {
+            & $command -Force @args
+            Write-Verbose ("Command [{0}] succeeded." -f $command)
+            $completed = $true
+        } catch {
+            if ($retrycount -ge $retries) {
+                Write-Verbose ("Command [{0}] failed the maximum number of {1} times." -f $command, $retrycount)
+                throw
+            } else {
+                Write-Verbose ("Command [{0}] failed. Retrying in {1} seconds." -f $command, $secondsDelay)
+                Start-Sleep $secondsDelay
+                $retrycount++
+            }
+        }
+    }
+}
 $ErrorActionPreference = 'Stop'
-Get-VM | ?{$_.Name -eq '{{.Name}}'} | Remove-VM -force
+Retry-Command -Command Remove-VM -Args @{Name='{{.Name}}'} -Verbose
 `))
 
 func (c *HypervClient) DeleteVm(name string) (err error) {
