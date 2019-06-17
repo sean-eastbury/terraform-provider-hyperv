@@ -2,16 +2,18 @@ package hyperv
 
 import (
 	"fmt"
-	"github.com/dylanmei/iso8601"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/masterzen/winrm"
-	"github.com/tidalf/terraform-provider-hyperv/api"
 	"log"
 	"net"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/dpotapov/winrm-auth-krb5"
+	"github.com/dylanmei/iso8601"
+	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/masterzen/winrm"
+	"github.com/tidalf/terraform-provider-hyperv/api"
 )
 
 type Config struct {
@@ -75,9 +77,14 @@ func getWinrmClient(config *Config) (winrmClient *winrm.Client, err error) {
 		winrm.DefaultParameters.EnvelopeSize,
 	)
 
-	//if config.TransportDecorator != nil {
-	//	params.TransportDecorator = config.TransportDecorator
-	//}
+	// if config.TransportDecorator != nil {
+	// 	params.TransportDecorator = config.TransportDecorator
+	// }
+	if config.User == "" && config.Password == "" {
+		params.TransportDecorator = func() winrm.Transporter {
+			return &winrmkrb5.Transport{}
+		}
+	}
 
 	if endpoint.Timeout.Seconds() > 0 {
 		params.Timeout = iso8601.FormatDuration(endpoint.Timeout)
