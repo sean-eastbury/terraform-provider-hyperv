@@ -154,7 +154,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 			"nested_virt": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default:  true,
+				Default:  false,
 			},
 
 			"enable_secure_boot": {
