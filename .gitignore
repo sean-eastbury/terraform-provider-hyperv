@@ -9,3 +9,4 @@ tfplanset
 /pkg
 /bin
 /c
+.vscode/settings.json

@@ -304,6 +304,7 @@ type vm struct {
 	SmartPagingFilePath                 string
 	SnapshotFileLocation                string
 	StaticMemory                        bool
+	NestedVirt                          bool
 	EnableSecureBoot                    string
 	SecureBootTemplate                  string
 	//ParentCheckpointName				string  this will allow us to set the checkpoint to use
@@ -382,6 +383,11 @@ if ($vm.StaticMemory) {
 	$SetVmArgs.DynamicMemory = $vm.DynamicMemory
 }
 
+if ($vm.NestedVirt) { 
+        Set-VMProcessor -VMName $vm.Name -ExposeVirtualizationExtensions $true
+}
+
+
 Set-Vm @SetVmArgs
 
 Set-VMFirmware -VMName $vm.Name -EnableSecureBoot $vm.EnableSecureBoot -SecureBootTemplate $vm.SecureBootTemplate 
@@ -419,6 +425,7 @@ func (c *HypervClient) CreateVm(
 	smartPagingFilePath string,
 	snapshotFileLocation string,
 	staticMemory bool,
+	nestedVirt bool,
 	enableSecureBoot string,
 	secureBootTemplate string,
 ) (err error) {
@@ -445,6 +452,7 @@ func (c *HypervClient) CreateVm(
 		SmartPagingFilePath:                 smartPagingFilePath,
 		SnapshotFileLocation:                snapshotFileLocation,
 		StaticMemory:                        staticMemory,
+		NestedVirt:                          nestedVirt,
 		EnableSecureBoot:                    enableSecureBoot,
 		SecureBootTemplate:                  secureBootTemplate,
 	})
@@ -597,6 +605,7 @@ func (c *HypervClient) UpdateVm(
 	smartPagingFilePath string,
 	snapshotFileLocation string,
 	staticMemory bool,
+	nestedVirt bool,
 	enableSecureBoot string,
 	secureBootTemplate string,
 ) (err error) {
@@ -623,6 +632,7 @@ func (c *HypervClient) UpdateVm(
 		SmartPagingFilePath:                 smartPagingFilePath,
 		SnapshotFileLocation:                snapshotFileLocation,
 		StaticMemory:                        staticMemory,
+		NestedVirt:                          nestedVirt,
 		EnableSecureBoot:                    enableSecureBoot,
 		SecureBootTemplate:                  secureBootTemplate,
 	})

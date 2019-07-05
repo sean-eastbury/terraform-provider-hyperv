@@ -151,6 +151,12 @@ func resourceHyperVMachineInstance() *schema.Resource {
 				Default:  true,
 			},
 
+			"nested_virt": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+
 			"enable_secure_boot": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -549,6 +555,7 @@ func resourceHyperVMachineInstanceCreate(data *schema.ResourceData, meta interfa
 	smartPagingFilePath := (data.Get("smart_paging_file_path")).(string)
 	snapshotFileLocation := (data.Get("snapshot_file_location")).(string)
 	staticMemory := (data.Get("static_memory")).(bool)
+	nestedVirt := (data.Get("nested_virt")).(bool)
 	enableSecureBoot := (data.Get("enable_secure_boot")).(string)
 	secureBootTemplate := (data.Get("secure_boot_template")).(string)
 	state := api.ToVmState((data.Get("state")).(string))
@@ -581,7 +588,7 @@ func resourceHyperVMachineInstanceCreate(data *schema.ResourceData, meta interfa
 		return err
 	}
 
-	err = client.CreateVm(name, generation, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, enableSecureBoot, secureBootTemplate)
+	err = client.CreateVm(name, generation, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, nestedVirt, enableSecureBoot, secureBootTemplate)
 	if err != nil {
 		return err
 	}
@@ -735,6 +742,7 @@ func resourceHyperVMachineInstanceRead(data *schema.ResourceData, meta interface
 	data.Set("smart_paging_file_path", vm.SmartPagingFilePath)
 	data.Set("snapshot_file_location", vm.SnapshotFileLocation)
 	data.Set("static_memory", vm.StaticMemory)
+	data.Set("nested_virt", vm.NestedVirt)
 	data.Set("state", vmState.State.String())
 
 	log.Printf("[INFO][hyperv][read] read hyperv machine: %#v", data)
@@ -795,6 +803,7 @@ func resourceHyperVMachineInstanceUpdate(data *schema.ResourceData, meta interfa
 		smartPagingFilePath := (data.Get("smart_paging_file_path")).(string)
 		snapshotFileLocation := (data.Get("snapshot_file_location")).(string)
 		staticMemory := (data.Get("static_memory")).(bool)
+		nestedVirt := (data.Get("nested_virt")).(bool)
 		enableSecureBoot := (data.Get("enable_secure_boot")).(string)
 		secureBootTemplate := (data.Get("secure_boot_template")).(string)
 
@@ -806,7 +815,7 @@ func resourceHyperVMachineInstanceUpdate(data *schema.ResourceData, meta interfa
 			return fmt.Errorf("[ERROR][hyperv][update] Either dynamic or static must be selected")
 		}
 
-		err = client.UpdateVm(name, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, enableSecureBoot, secureBootTemplate)
+		err = client.UpdateVm(name, automaticCriticalErrorAction, automaticCriticalErrorActionTimeout, automaticStartAction, automaticStartDelay, automaticStopAction, checkpointType, dynamicMemory, guestControlledCacheTypes, highMemoryMappedIoSpace, lockOnDisconnect, lowMemoryMappedIoSpace, memoryMaximumBytes, memoryMinimumBytes, memoryStartupBytes, notes, processorCount, smartPagingFilePath, snapshotFileLocation, staticMemory, nestedVirt, enableSecureBoot, secureBootTemplate)
 		if err != nil {
 			return err
 		}
