@@ -459,7 +459,7 @@ func resourceHyperVMachineInstance() *schema.Resource {
 						"controller_type": {
 							Type:         schema.TypeString,
 							Optional:     true,
-							Default:      api.ControllerType_name[api.ControllerType_Ide],
+							Default:      api.ControllerType_name[api.ControllerType_Scsi],
 							ValidateFunc: stringKeyInMap(api.ControllerType_value, true),
 						},
 						"boot": {

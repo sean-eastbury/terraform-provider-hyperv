@@ -31,7 +31,7 @@ type Config struct {
 	Timeout       string
 }
 
-// HypervClient() returns a new client for configuring hyperv.
+// Client returns a new client for configuring hyperv.
 func (c *Config) Client() (comm *api.HypervClient, err error) {
 	log.Printf("[INFO][hyperv] HyperV HypervClient configured for HyperV API operations using:\n"+
 		"  Host: %s\n"+
