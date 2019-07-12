@@ -1,7 +1,7 @@
 HyperV Terraform Provider
 =========================
 Forked from https://github.com/taliesins/terraform-provider-hyperv
-#This is beta code. Working on adding acceptance tests so that I can mark it as release quality.
+#This is beta code.
 
 - [Website](https://github.com/tidalf/terraform-provider-hyperv)
 - [Releases](https://github.com/tidalf/terraform-provider-hyperv/releases)
