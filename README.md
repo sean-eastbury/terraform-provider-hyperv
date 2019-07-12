@@ -9,7 +9,6 @@ HyperV Terraform Provider
 - [Issues](https://github.com/taliesins/terraform-provider-hyperv/issues)
 
 ![Hashi Logo](https://cdn.rawgit.com/taliesins/terraform-provider-hyperv/master/website/logo-hashicorp.svg "Hashi Logo")
-![Windows Server Logo](https://cdn.rawgit.com/taliesins/terraform-provider-hyperv/master/website/windows-server-2016-logo.svg "Windows Server Logo")
 
 Features
 ------------
