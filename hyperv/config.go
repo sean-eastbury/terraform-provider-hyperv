@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	// Commented by Sean
+	// Commented because was causing issues
 	// "github.com/dpotapov/winrm-auth-krb5"
 	"github.com/dylanmei/iso8601"
 	"github.com/hashicorp/terraform/helper/schema"
@@ -82,7 +82,7 @@ func getWinrmClient(config *Config) (winrmClient *winrm.Client, err error) {
 	// 	params.TransportDecorator = config.TransportDecorator
 	// }
 
-	// Commented by Sean
+	// Commented because causing issues
 	// if config.User == "" && config.Password == "" {
 	// params.TransportDecorator = func() winrm.Transporter {
 	// return &winrmkrb5.Transport{}

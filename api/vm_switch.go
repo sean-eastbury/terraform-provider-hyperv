@@ -24,7 +24,6 @@ var VMSwitchBandwidthMode_name = map[VMSwitchBandwidthMode]string{
 	VMSwitchBandwidthMode_None:     "None",
 }
 
-// updated from lower to upper case
 var VMSwitchBandwidthMode_value = map[string]VMSwitchBandwidthMode{
 	"default":  VMSwitchBandwidthMode_Default,
 	"weight":   VMSwitchBandwidthMode_Weight,
@@ -82,7 +81,6 @@ var VMSwitchType_name = map[VMSwitchType]string{
 	VMSwitchType_External: "External",
 }
 
-// updated from lower to upper case
 var VMSwitchType_value = map[string]VMSwitchType{
 	"private":  VMSwitchType_Private,
 	"internal": VMSwitchType_Internal,
@@ -172,7 +170,7 @@ if ($NetAdapterNames) {
 	$NewVmSwitchArgs.AllowManagementOS=$vmSwitch.AllowManagementOS
 	$NewVmSwitchArgs.NetAdapterName=$NetAdapterNames
 } else {
-	# SEAN >>> Why is following commented? Switch will not be built without it being set
+	# The was following commented. Switch will not be built without it being set
 	$NewVmSwitchArgs.SwitchType=$switchType
 	#not used unless interface is specified
 	#-AllowManagementOS $vmSwitch.AllowManagementOS
@@ -189,7 +187,7 @@ $SetVmSwitchArgs = @{}
 $SetVmSwitchArgs.Name=$vmSwitch.Name
 $SetVmSwitchArgs.Notes=$vmSwitch.Notes
 
-#### SEAN >> Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
+#### Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
 
 if ($vmSwitch.SwitchType -eq 2) {
 	if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
@@ -207,7 +205,7 @@ if ($vmSwitch.SwitchType -eq 2) {
 } elseif ($vmSwitch.SwitchType -eq 0){
 	#### Test for  private
 } else {
-	#### Need to catch error somehow
+	#### Need to catch error
 }
 
 #############################
@@ -349,7 +347,7 @@ if ($NetAdapterNames) {
 	#-AllowManagementOS $vmSwitch.AllowManagementOS
 }
 
-#### SEAN >> Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
+#### Following parameters do not work, if switch type is internal or private so added check for external for failing parameters
 
 if ($vmSwitch.SwitchType -eq 2) {
 	if (($minimumBandwidthMode -eq [Microsoft.HyperV.PowerShell.VMSwitchBandwidthMode]::Absolute) -and $switchObject.DefaultFlowMinimumBandwidthAbsolute -ne $vmSwitch.DefaultFlowMinimumBandwidthAbsolute) {
