@@ -9,11 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dpotapov/winrm-auth-krb5"
+	// Commented by Sean
+	// "github.com/dpotapov/winrm-auth-krb5"
 	"github.com/dylanmei/iso8601"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/masterzen/winrm"
-	"github.com/tidalf/terraform-provider-hyperv/api"
+	"github.com/sean-eastbury/terraform-provider-hyperv/api"
 )
 
 type Config struct {
@@ -80,11 +81,13 @@ func getWinrmClient(config *Config) (winrmClient *winrm.Client, err error) {
 	// if config.TransportDecorator != nil {
 	// 	params.TransportDecorator = config.TransportDecorator
 	// }
-	if config.User == "" && config.Password == "" {
-		params.TransportDecorator = func() winrm.Transporter {
-			return &winrmkrb5.Transport{}
-		}
-	}
+
+	// Commented by Sean
+	// if config.User == "" && config.Password == "" {
+	// params.TransportDecorator = func() winrm.Transporter {
+	// return &winrmkrb5.Transport{}
+	// }
+	// }
 
 	if endpoint.Timeout.Seconds() > 0 {
 		params.Timeout = iso8601.FormatDuration(endpoint.Timeout)
@@ -191,7 +194,7 @@ func stringKeyInMap(valid interface{}, ignoreCase bool) schema.SchemaValidateFun
 		mapKeyType := reflect.ValueOf(mapKeyString)
 		mapValueType := mapType.MapIndex(mapKeyType)
 
-		if mapValueType.IsValid() {
+		if !mapValueType.IsValid() {
 			es = append(es, fmt.Errorf("expected %s to be one of %mapKeyString, got %s", k, valid, mapKeyString))
 		}
 
