@@ -1,4 +1,4 @@
-module github.com/tidalf/terraform-provider-hyperv
+module github.com/sean-eastbury/terraform-provider-hyperv
 
 go 1.12
 

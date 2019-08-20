@@ -9,7 +9,7 @@ import (
 	"text/template"
 
 	"github.com/masterzen/winrm"
-	"github.com/tidalf/terraform-provider-hyperv/powershell"
+	"github.com/sean-eastbury/terraform-provider-hyperv/powershell"
 )
 
 type HypervClient struct {

@@ -3,10 +3,10 @@ HyperV Terraform Provider
 Forked from https://github.com/taliesins/terraform-provider-hyperv
 #This is beta code.
 
-- [Website](https://github.com/tidalf/terraform-provider-hyperv)
-- [Releases](https://github.com/tidalf/terraform-provider-hyperv/releases)
-- [Documentation](https://github.com/tidalf/terraform-provider-hyperv/tree/master/website/docs)
-- [Issues](https://github.com/tidalf/terraform-provider-hyperv/issues)
+- [Website](https://github.com/sean-eastbury/terraform-provider-hyperv)
+- [Releases](https://github.com/sean-eastbury/terraform-provider-hyperv/releases)
+- [Documentation](https://github.com/sean-eastbury/terraform-provider-hyperv/tree/master/website/docs)
+- [Issues](https://github.com/sean-eastbury/terraform-provider-hyperv/issues)
 
 ![Hashi Logo](https://cdn.rawgit.com/taliesins/terraform-provider-hyperv/master/website/logo-hashicorp.svg "Hashi Logo")
 
@@ -34,11 +34,11 @@ Requirements
 Building The Provider
 ---------------------
 
-Clone repository to: `$GOPATH/src/github.com/tidalf/terraform-provider-hyperv`
+Clone repository to: `$GOPATH/src/github.com/sean-eastbury/terraform-provider-hyperv`
 
 ```sh
 $ mkdir -p $GOPATH/src/github.com/tidalf; cd $GOPATH/src/github.com/tidalf
-$ git clone https://github.com/tidalf/terraform-provider-hyperv.git
+$ git clone https://github.com/sean-eastbury/terraform-provider-hyperv.git
 ```
 
 Enter the provider directory and build the provider

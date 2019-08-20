@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
-	"github.com/tidalf/terraform-provider-hyperv/api"
+	"github.com/sean-eastbury/terraform-provider-hyperv/api"
 )
 
 const MaxUint32 = 4294967295
