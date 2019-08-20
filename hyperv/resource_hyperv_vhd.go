@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/tidalf/terraform-provider-hyperv/api"
+	"github.com/sean-eastbury/terraform-provider-hyperv/api"
 )
 
 func resourceHyperVVhd() *schema.Resource {
@@ -70,7 +70,7 @@ func resourceHyperVVhd() *schema.Resource {
 				},
 			},
 			"size": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 				Default:  0,
 				ConflictsWith: []string{
@@ -154,7 +154,7 @@ func resourceHyperVVhdCreate(d *schema.ResourceData, meta interface{}) (err erro
 	sourceDisk := (d.Get("source_disk")).(int)
 	vhdType := api.ToVhdType((d.Get("vhd_type")).(string))
 	parentPath := (d.Get("parent_path")).(string)
-	size := uint64((d.Get("size")).(int))
+	size := (d.Get("size")).(string)
 	blockSize := uint32((d.Get("block_size")).(int))
 	logicalSectorSize := uint32((d.Get("logical_sector_size")).(int))
 	physicalSectorSize := uint32((d.Get("physical_sector_size")).(int))
@@ -165,14 +165,14 @@ func resourceHyperVVhdCreate(d *schema.ResourceData, meta interface{}) (err erro
 		return err
 	}
 
-	if size > 0 && parentPath == "" {
-		//Update vhd size
-		err = c.ResizeVhd(path, size)
+	//	if size > 0 && parentPath == "" {
+	//		//Update vhd size
+	//		err = c.ResizeVhd(path, size)
 
-		if err != nil {
-			return err
-		}
-	}
+	//		if err != nil {
+	//			return err
+	//		}
+	//	}
 
 	d.SetId(path)
 
@@ -228,7 +228,7 @@ func resourceHyperVVhdUpdate(d *schema.ResourceData, meta interface{}) (err erro
 	sourceDisk := (d.Get("source_disk")).(int)
 	vhdType := api.ToVhdType((d.Get("vhd_type")).(string))
 	parentPath := (d.Get("parent_path")).(string)
-	size := uint64((d.Get("size")).(int))
+	size := (d.Get("size")).(string)
 	blockSize := uint32((d.Get("block_size")).(int))
 	logicalSectorSize := uint32((d.Get("logical_sector_size")).(int))
 	physicalSectorSize := uint32((d.Get("physical_sector_size")).(int))
@@ -244,16 +244,16 @@ func resourceHyperVVhdUpdate(d *schema.ResourceData, meta interface{}) (err erro
 		}
 	}
 
-	if size > 0 && parentPath == "" {
-		if !exists || d.HasChange("size") {
-			//Update vhd size
-			err = c.ResizeVhd(path, size)
+	//	if size > 0 && parentPath == "" {
+	//		if !exists || d.HasChange("size") {
+	//			//Update vhd size
+	//			err = c.ResizeVhd(path, size)
 
-			if err != nil {
-				return err
-			}
-		}
-	}
+	//			if err != nil {
+	//				return err
+	//			}
+	//		}
+	//	}
 
 	log.Printf("[INFO][hyperv][update] updated hyperv vhd: %#v", d)
 

@@ -133,7 +133,7 @@ type vhd struct {
 	PhysicalSectorSize      uint32
 	ParentPath              string
 	FileSize                uint64
-	Size                    uint64
+	Size                    string
 	MinimumSize             uint64
 	Attached                bool
 	DiskNumber              int
@@ -160,6 +160,19 @@ $source='{{.Source}}'
 $sourceVm='{{.SourceVm}}'
 $sourceDisk={{.SourceDisk}}
 $vhd = '{{.VhdJson}}' | ConvertFrom-Json
+
+##--Added for string conversion of HDD size from string to Int64--# 
+$HDDUnit = $vhd.Size -replace '\d';
+
+if ($HDDUnit) {
+	$vhd.Size = [int64]$vhd.Size.Replace($HDDUnit,'') * "1$HDDUnit";
+} else {
+	$vhd.Size = [int64]$vhd.Size;
+}
+
+##-------------##
+
+
 $vhdType = [Microsoft.Vhd.PowerShell.VhdType]$vhd.VhdType
 
 function Get-7ZipPath {
@@ -307,7 +320,7 @@ if (!(Test-Path -Path $vhd.Path)) {
         Export-VM -Name $sourceVm -Path $pathDirectory
         Move-Item "$pathDirectory\$sourceVm\Virtual Hard Disks\*.*" $pathDirectory
         Remove-Item "$pathDirectory\$sourceVm" -Force -Recurse
-		Get-VHD -path $vhd.Path
+        Get-VHD -path $vhd.Path
     } elseif ($source) {
         Push-Location $pathDirectory
         
@@ -362,7 +375,7 @@ if (!(Test-Path -Path $vhd.Path)) {
 }
 `))
 
-func (c *HypervClient) CreateOrUpdateVhd(path string, source string, sourceVm string, sourceDisk int, vhdType VhdType, parentPath string, size uint64, blockSize uint32, logicalSectorSize uint32, physicalSectorSize uint32) (err error) {
+func (c *HypervClient) CreateOrUpdateVhd(path string, source string, sourceVm string, sourceDisk int, vhdType VhdType, parentPath string, size string, blockSize uint32, logicalSectorSize uint32, physicalSectorSize uint32) (err error) {
 	vhdJson, err := json.Marshal(vhd{
 		Path:               path,
 		VhdType:            vhdType,
@@ -385,15 +398,15 @@ func (c *HypervClient) CreateOrUpdateVhd(path string, source string, sourceVm st
 
 type resizeVhdArgs struct {
 	Path string
-	Size uint64
+	Size string
 }
 
 var resizeVhdTemplate = template.Must(template.New("ResizeVhd").Parse(`
 $ErrorActionPreference = 'Stop'
-Resize-VHD –Path '{{.Path}}' –SizeBytes {{.Size}}
+Resize-VHD -Path '{{.Path}}' -SizeBytes {{.Size}}
 `))
 
-func (c *HypervClient) ResizeVhd(path string, size uint64) (err error) {
+func (c *HypervClient) ResizeVhd(path string, size string) (err error) {
 	err = c.runFireAndForgetScript(resizeVhdTemplate, resizeVhdArgs{
 		Path: path,
 		Size: size,
@@ -419,7 +432,7 @@ if (Test-Path $path) {
 		PhysicalSectorSize=$_.PhysicalSectorSize;
 		ParentPath=$_.ParentPath;
 		FileSize=$_.FileSize;
-		Size=$_.Size;
+		Size="$([Math]::floor($_.Size/"1$HDDUnit"))$HDDUnit";
 		MinimumSize=$_.MinimumSize;
 		Attached=$_.Attached;
 		DiskNumber=$_.DiskNumber;
