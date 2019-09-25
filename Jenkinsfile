@@ -15,17 +15,8 @@ pipeline {
       }
     }
     stage('Test-Code') {
-      parallel {
-        stage('Test-Code') {
-          steps {
-            sh 'make test'
-          }
-        }
-        stage('Skip Test') {
-          steps {
-            sleep 5
-          }
-        }
+      steps {
+        sh 'make test'
       }
     }
     stage('Build') {
