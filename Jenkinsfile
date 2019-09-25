@@ -9,6 +9,8 @@ pipeline {
   stages {
     stage('Format') {
       steps {
+        sh 'export GOPATH="$HOME/Go-Projects"'
+        sh ' export PATH=$PATH:$GOPATH/bin'
         sh 'make fmt'
       }
     }
@@ -22,8 +24,5 @@ pipeline {
         sh 'make build'
       }
     }
-  }
-  environment {
-    GOPATH = '/root/Go-Projects'
   }
 }
