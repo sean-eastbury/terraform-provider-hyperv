@@ -22,7 +22,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'make build'
-        archiveArtifacts(allowEmptyArchive: true, artifacts: '/')
+        archiveArtifacts '/'
       }
     }
   }
