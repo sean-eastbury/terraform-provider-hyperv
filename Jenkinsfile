@@ -23,4 +23,7 @@ pipeline {
       }
     }
   }
+  environment {
+    GOPATH = '/root/Go-Projects'
+  }
 }
