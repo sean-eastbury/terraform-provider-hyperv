@@ -7,10 +7,9 @@ pipeline {
 
   }
   stages {
-    stage('Build') {
+    stage('Format') {
       steps {
         sh 'make fmt'
-        sh 'make build'
       }
     }
   }
