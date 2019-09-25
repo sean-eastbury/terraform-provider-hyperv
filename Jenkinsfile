@@ -12,5 +12,10 @@ pipeline {
         sh 'make fmt'
       }
     }
+    stage('Test-Code') {
+      steps {
+        sh 'make test'
+      }
+    }
   }
 }
