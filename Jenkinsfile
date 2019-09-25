@@ -22,7 +22,6 @@ pipeline {
     stage('Build') {
       steps {
         sh 'make build'
-        archiveArtifacts(artifacts: 'terraform-provider-hyperv', onlyIfSuccessful: true)
       }
     }
   }
