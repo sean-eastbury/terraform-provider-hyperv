@@ -20,8 +20,13 @@ pipeline {
       }
     }
     stage('Build') {
+      environment {
+        GO111MODULE = 'on'
+        GOPATH = '/root/Go-Projects'
+      }
       steps {
         sh 'make build'
+        sh 'go get github.com/hashicorp/terraform'
       }
     }
   }
