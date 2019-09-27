@@ -25,8 +25,8 @@ pipeline {
         GOPATH = '/root/Go-Projects'
       }
       steps {
-        sh 'make build'
         sh 'go get github.com/hashicorp/terraform'
+        sh 'make build'
       }
     }
   }
