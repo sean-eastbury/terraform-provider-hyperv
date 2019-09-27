@@ -26,6 +26,7 @@ pipeline {
       steps {
         sh 'go get github.com/hashicorp/terraform'
         sh 'make build'
+        archiveArtifacts(artifacts: 'dist/terraform-provider-hyperv', onlyIfSuccessful: true)
       }
     }
   }
