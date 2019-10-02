@@ -21,9 +21,9 @@ pipeline {
       environment {
         GO111MODULE = 'on'
         GOPATH = '/root/Go-Projects'
-        PATH = '$GOPATH/bin'
       }
       steps {
+        sh 'export PATH=$PATH:/root/Go-Projects/bin'
         sh 'go get github.com/hashicorp/terraform'
         sh 'make build'
       }
