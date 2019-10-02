@@ -28,5 +28,10 @@ pipeline {
         sh 'make build'
       }
     }
+    stage('Deploy') {
+      steps {
+        sh 'make publish'
+      }
+    }
   }
 }
