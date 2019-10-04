@@ -18,7 +18,7 @@ pipeline {
     }
     stage('Get-Terraform') {
       steps {
-        sh 'go get -u github.com/hashicorp/terraform'
+        sh 'go get github.com/hashicorp/terraform'
       }
     }
   }
