@@ -4,7 +4,6 @@ pipeline {
       image 'golang'
       args '-p 3030:3030'
     }
-
   }
   stages {
     stage('Format') {
@@ -17,16 +16,16 @@ pipeline {
         sh 'make test'
       }
     }
-    stage('Build') {
-      environment {
-        GO111MODULE = 'on'
-        GOPATH = '/root/Go-Projects'
-      }
+  }
+    stage('Get-Terrafom') {
       steps {
-        sh 'export PATH=$PATH:/root/Go-Projects/bin'
         sh 'go get github.com/hashicorp/terraform'
-        sh 'make build'
       }
     }
+  }
+  environment {
+    GO111MODULE = 'on'
+    GOPATH = '/home/Go-Projects'
+    GOBIN = '/home/Go-Projects/src/github.com/sean-eastbury/terraform-provider-hyperv/dist/'
   }
 }
