@@ -21,6 +21,32 @@ pipeline {
         sh 'go get github.com/hashicorp/terraform'
       }
     }
+    stage('Build for development') {
+      when {
+        branch 'development'
+      }
+      steps {
+        sh 'make build'
+      }
+      post {
+        always  {
+          archiveArtifacts artifacts: 'dist/terraform-p*'
+        }
+      }
+    }
+    stage('Build for production') {
+      when {
+        branch 'production'
+      }
+      steps {
+        sh 'make build'
+      }
+      post {
+        always  {
+          archiveArtifacts artifacts: 'dist/terrafor*'
+        }
+      }
+    }
   }
   environment {
     GO111MODULE = 'on'
